@@ -16,4 +16,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataBase\Bands\" />
+    <Folder Include="Data\BandsData\" />
+    <Folder Include="Managers\BandManagers\" />
+  </ItemGroup>
+
 </Project>

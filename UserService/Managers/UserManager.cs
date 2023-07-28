@@ -3,6 +3,7 @@ using UserService.Data;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Runtime.InteropServices;
 
 namespace UserService.Managers
 {
