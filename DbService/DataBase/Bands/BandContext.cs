@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace DbService.DataBase.Users
+namespace DbService.DataBase.Bands
 {
-    public class UserContext: DbContext
+    public class BandContext: DbContext
     {
-        public UserContext(DbContextOptions<UserContext> options)
+        public BandContext(DbContextOptions<BandContext> options)
        : base(options)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -12,6 +12,6 @@ namespace DbService.DataBase.Users
             Database.EnsureCreated();
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Band> Bands { get; set; }
     }
 }

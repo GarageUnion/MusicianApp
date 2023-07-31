@@ -16,5 +16,8 @@
         public DateTime BirthDate { get; set; }
 
         public string? Media { get; set; }
+        public int[] UsersId { get; set; }
+
+        public int[] TagsId { get; set; }
     }
 }

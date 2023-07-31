@@ -8,5 +8,6 @@ namespace UserService.Managers
         Task<UserDto> CreateUser(CreateUserRequest createUserRequest);
         Task DeleteUser(int id);
         Task<UserDto> CheckRegistration(LoginUserRequest loginRequest);
+
     }
 }

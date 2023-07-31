@@ -1,23 +1,25 @@
-﻿namespace UserService.Data
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace DbService.DataBase.Bands
 {
-    public class UserDto
+    [Table("tblBands")]
+
+    public class Band
     {
+        [Key]
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(64)]
         public string Name { get; set; }
 
-        public string Phone { get; set; }
-
-        public string Password { get; set; }
-
+        [Required]
         public string City { get; set; }
         public string? Description { get; set; }
-
-        public DateTime BirthDate { get; set; }
-
-        public string? Media { get; set; }
         public int[] UsersId { get; set; }
 
         public int[] TagsId { get; set; }
+
     }
 }
