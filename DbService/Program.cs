@@ -1,9 +1,10 @@
-using DbService.DataBase.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Xml.Linq;
 using DbService.DataBase.Users;
+using DbService.DataBase.Bands;
 using UserService.Managers;
+using BandService.Managers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<UserContext>(opt =>
+    opt.UseNpgsql("Host=localhost;Port=5432;Database=musicians;Username=postgres;Password=13685924"));
+builder.Services.AddDbContext<BandContext>(opt =>
     opt.UseNpgsql("Host=localhost;Port=5432;Database=musicians;Username=postgres;Password=13685924"));
 
 
@@ -32,7 +35,7 @@ builder.Services.AddCors(options =>
                       });
 });
 builder.Services.AddScoped<IUsersManager, UsersManager>();
-
+builder.Services.AddScoped<IBandsManager, BandsManager>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

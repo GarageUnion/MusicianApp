@@ -37,8 +37,10 @@ namespace BandService.Managers
             await _dbContext.SaveChangesAsync();
             return new BandDto
             {
-                Name = createBandRequest.Name,
-                City = createBandRequest.City,
+                Id = newBand.Id,
+                Name = newBand.Name,
+                City = newBand.City,
+                Description= newBand.Description,
             };
         }
         public async Task DeleteBand(int id)

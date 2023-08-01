@@ -41,11 +41,12 @@ namespace UserService.Managers
                 _dbContext.Users.Add(newUser);
                 await _dbContext.SaveChangesAsync();
                 return  new UserDto {
-                    Name = createUserRequest.Name,
-                    Phone = createUserRequest.Phone,
-                    Password = createUserRequest.Password,
-                    City = createUserRequest.City,
-                    BirthDate = createUserRequest.BirthDate,
+                    Id = newUser.Id,
+                    Name = newUser.Name,
+                    Phone = newUser.Phone,
+                    Password = newUser.Password,
+                    City = newUser.City,
+                    BirthDate = newUser.BirthDate,
                 };
             }
             else return null;
@@ -67,6 +68,7 @@ namespace UserService.Managers
                 if (loginUserRequest.Password == user.Password)
                 {
                     return new UserDto {
+                        Id = user.Id,
                         Name = user.Name,
                         Phone = user.Phone,
                         Password = user.Password,

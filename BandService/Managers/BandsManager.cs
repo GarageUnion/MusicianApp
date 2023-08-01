@@ -18,7 +18,7 @@ namespace BandService.Managers
         }
         public async Task<BandDto> GetById(int id)
         {
-            return await _httpClient.GetFromJsonAsync<BandDto>("Bands/one");
+            return await _httpClient.GetFromJsonAsync<BandDto>($"Bands/one/{id}");
         }
 
         public async Task<BandDto> CreateBand(CreateBandRequest createUserRequest)
