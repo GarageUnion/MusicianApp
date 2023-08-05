@@ -1,4 +1,4 @@
-﻿using DbService.DataBase.Users;
+﻿using DbService.DataBase;
 using Microsoft.EntityFrameworkCore;
 using UserService.Data;
 
@@ -6,26 +6,26 @@ namespace UserService.Managers
 {
     public class UsersManager : IUsersManager
     {
-        private readonly UserContext _dbContext;
-        public UsersManager(UserContext dbContext)
+        private readonly MusicianAppContext _dbContext;
+        public UsersManager(MusicianAppContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<List<UserDto>> Get() 
+        public async Task<List<User>> Get() 
         {
-            var users = await _dbContext.Users.ToListAsync();
-            return users.Select(x => new UserDto { Id = x.Id, Name = x.Name, Phone = x.Phone, Password = x.Password }).ToList();
+            var users = await _dbContext.Users.Include(c=>c.Bands).ToListAsync();
+            return users;
         }
-        public async Task<UserDto> GetById(int id)
+        public async Task<User> GetById(int id)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _dbContext.Users.Include(c => c.Bands).FirstOrDefaultAsync(x => x.Id == id);
             if (user != null) 
-                return new UserDto { Id = user.Id, Name = user.Name, Phone = user.Phone, Password = user.Password };
+                return user;
             else
                 return null;
         }
-        public async Task<UserDto> CreateUser(CreateUserRequest createUserRequest)
+        public async Task<User> CreateUser(CreateUserRequest createUserRequest)
         {
             var newUser = new User
             {
@@ -40,41 +40,29 @@ namespace UserService.Managers
             {
                 _dbContext.Users.Add(newUser);
                 await _dbContext.SaveChangesAsync();
-                return  new UserDto {
-                    Id = newUser.Id,
-                    Name = newUser.Name,
-                    Phone = newUser.Phone,
-                    Password = newUser.Password,
-                    City = newUser.City,
-                    BirthDate = newUser.BirthDate,
-                };
+                return newUser;
             }
             else return null;
         }
-        public async Task DeleteUser(int id)
+        public async Task<string> DeleteUser(int id)
         {
             var user = _dbContext.Users.FirstOrDefault((x => x.Id == id));
             if (user != null)
             {
                 _dbContext.Users.Remove(user);
                 await _dbContext.SaveChangesAsync();
+                return "ОК";
             }
+            else return $"Пользователь с id = {id} не найден";
         }
-        public async Task<UserDto> CheckRegistration(LoginUserRequest loginUserRequest)
+        public async Task<User> CheckRegistration(LoginUserRequest loginUserRequest)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Phone == loginUserRequest.Phone);
             if (user != null)
             {
                 if (loginUserRequest.Password == user.Password)
                 {
-                    return new UserDto {
-                        Id = user.Id,
-                        Name = user.Name,
-                        Phone = user.Phone,
-                        Password = user.Password,
-                        City = user.City,
-                        BirthDate = user.BirthDate,
-                    };
+                    return user;
                 }
             }
             return null;

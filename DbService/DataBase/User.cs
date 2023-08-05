@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DbService.DataBase.Users
+namespace DbService.DataBase
 {
     [Table("tblUsers")]
 
@@ -29,6 +28,10 @@ namespace DbService.DataBase.Users
         public DateTime BirthDate { get; set; }
 
         public string? Media { get; set; }
+
+
+       
+        public List<Band> Bands { get; set; } = new List<Band>();
 
     }
 }

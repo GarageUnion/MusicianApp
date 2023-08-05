@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-
-namespace DbService.DataBase.Bands
+namespace DbService.DataBase
 {
     [Table("tblBands")]
 
@@ -17,6 +16,10 @@ namespace DbService.DataBase.Bands
         [Required]
         public string City { get; set; }
         public string? Description { get; set; }
+
+        
+        [Required]
+        public List<User> Users { get; set; } = new List<User>();
 
     }
 }

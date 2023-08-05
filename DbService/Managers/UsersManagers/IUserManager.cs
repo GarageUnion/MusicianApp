@@ -1,13 +1,13 @@
-﻿using DbService.DataBase.Users;
+﻿using DbService.DataBase;
 using UserService.Data;
 namespace UserService.Managers
 {
     public interface IUsersManager
     {
-        Task<List<UserDto>> Get();
-        Task<UserDto> GetById(int id);
-        Task<UserDto> CreateUser(CreateUserRequest createUserRequest);
-        Task DeleteUser(int id);
-        Task<UserDto> CheckRegistration(LoginUserRequest loginRequest);
+        Task<List<User>> Get();
+        Task<User> GetById(int id);
+        Task<User> CreateUser(CreateUserRequest createUserRequest);
+        Task<string> DeleteUser(int id);
+        Task<User> CheckRegistration(LoginUserRequest loginRequest);
     }
 }

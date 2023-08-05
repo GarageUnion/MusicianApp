@@ -1,57 +1,111 @@
 ﻿using BandService.Data;
-using DbService.DataBase.Bands;
-using DbService.DataBase.Users;
+using DbService.DataBase;
 using Microsoft.EntityFrameworkCore;
 
 namespace BandService.Managers
 {
     public class BandsManager : IBandsManager
     {
-        private readonly BandContext _dbContext;
-        public BandsManager(BandContext dbContext)
+        private readonly MusicianAppContext _dbContext;
+        public BandsManager(MusicianAppContext dbContext)
         {
             _dbContext = dbContext;
         }
-        public async Task<List<BandDto>> Get()
+        public async Task<List<Band>> Get()
         {
-            var bands = await _dbContext.Bands.ToListAsync();
-            return bands.Select(x => new BandDto { Id = x.Id, Name = x.Name, City=x.City }).ToList();
+            var bands = await _dbContext.Bands.Include(c =>c.Users).ToListAsync();
+            return bands;
         }
-        public async Task<BandDto> GetById(int id)
+        public async Task<Band> GetById(int id)
         {
-            var band = await _dbContext.Bands.FirstOrDefaultAsync(x => x.Id == id);
+            var band = await _dbContext.Bands.Include(c => c.Users).FirstOrDefaultAsync(x => x.Id == id);
             if (band != null)
-                return new BandDto { Id = band.Id, Name = band.Name, City= band.City };
+                return band;
             else
                 return null;
         }
 
-        public async Task<BandDto> CreateBand(CreateBandRequest createBandRequest)
+        public async Task<Band> CreateBand(CreateBandRequest createBandRequest)
         {
-            var newBand = new Band
+            var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == createBandRequest.UserId);
+            if (user != null)
             {
-                Name = createBandRequest.Name,
-                City = createBandRequest.City,
-            };
-            _dbContext.Bands.Add(newBand);
-            await _dbContext.SaveChangesAsync();
-            return new BandDto
-            {
-                Id = newBand.Id,
-                Name = newBand.Name,
-                City = newBand.City,
-                Description= newBand.Description,
-            };
+                var newBand = new Band
+                {
+                    Name = createBandRequest.Name,
+                    City = createBandRequest.City,
+                };
+                newBand.Users.Add(user); 
+                _dbContext.Bands.Add(newBand);
+                await _dbContext.SaveChangesAsync();
+                return newBand;
+            }
+            else return null;
         }
-        public async Task DeleteBand(int id)
+        public async Task<string> DeleteBand(int id)
         {
             var user = _dbContext.Bands.FirstOrDefault((x => x.Id == id));
             if (user != null)
             {
                 _dbContext.Bands.Remove(user);
                 await _dbContext.SaveChangesAsync();
+                return "ОК";
             }
+            else return $"Пользователь c id={id} не найден";
         }
-       
+
+        public async Task<string> AddUser(int bandId, int userId)
+        {
+            var band = await _dbContext.Bands.FirstOrDefaultAsync(x => x.Id == bandId);
+            
+            if (band != null)
+            {
+                var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                if (user != null)
+                {
+                    band.Users.Add(user);
+                    await _dbContext.SaveChangesAsync();
+                    return "ОК";
+                }
+                else return $"Пользователь c id={userId} не найден";
+            }
+            else
+                return $"Группа с id={bandId} не найден";
+        }
+        public async Task<string> RemoveUser(int bandId, int userId)
+        {
+            var band = await _dbContext.Bands.FirstOrDefaultAsync(x => x.Id == bandId);
+
+            if (band != null)
+            {
+                var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                if (band.Users.Contains(user))
+                {
+                    if (band.Users.Count() > 1)
+                    {
+                        band.Users.Remove(user);
+                        await _dbContext.SaveChangesAsync();
+                    }
+                    else
+                        DeleteBand(bandId);
+                    return "ОК";
+
+                }
+                else return $"Пользователь c id={userId} не является участником группы с id={bandId}";
+            }
+            else
+                return $"Группа с id={bandId} не найден";
+        }
+        public async Task<List<User>> GetMembers(int id)
+        {
+            var band = await _dbContext.Bands.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (band != null)
+            {
+                return band.Users.ToList();
+            }
+            else return null;
+        }
+
     }
 }

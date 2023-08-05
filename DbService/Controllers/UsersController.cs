@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using UserService.Managers;
 using System.Runtime.CompilerServices;
 using UserService.Data;
-using DbService.DataBase.Users;
+using DbService.DataBase;
 
 namespace DbService.Controllers
 {
@@ -17,29 +17,29 @@ namespace DbService.Controllers
             _usersManager = usersManager;
         }
         [HttpPost]
-        public async Task<UserDto> AddUser([FromBody] CreateUserRequest createUserRequest)
+        public async Task<User> AddUser([FromBody] CreateUserRequest createUserRequest)
         {
             return await _usersManager.CreateUser(createUserRequest);
         }
 
         [HttpGet("many")]
-        public async Task<List<UserDto>> GetUsers()
+        public async Task<List<User>> GetUsers()
         {
             return await _usersManager.Get();
         }
         [HttpGet("one/{id:int}")]
-        public async Task<UserDto> GetUserById([FromRoute] int id)
+        public async Task<User> GetUserById([FromRoute] int id)
         {
             return await _usersManager.GetById(id);
         }
 
         [HttpDelete("delete/{id:int}")]
-        public async Task DeleteUser([FromRoute] int id)
+        public async Task<string> DeleteUser([FromRoute] int id)
         {
-            await _usersManager.DeleteUser(id);
+            return await _usersManager.DeleteUser(id);
         }
         [HttpGet("checkLogin")]
-        public async Task<UserDto> CheckLogin([FromQuery] LoginUserRequest loginUserRequest)
+        public async Task<User> CheckLogin([FromQuery] LoginUserRequest loginUserRequest)
         {
             return await _usersManager.CheckRegistration(loginUserRequest);
         }

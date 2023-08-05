@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Xml.Linq;
-using DbService.DataBase.Users;
-using DbService.DataBase.Bands;
+using DbService.DataBase;
 using UserService.Managers;
 using BandService.Managers;
 
@@ -10,15 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+) ;
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<UserContext>(opt =>
-    opt.UseNpgsql("Host=localhost;Port=5432;Database=musicians;Username=postgres;Password=13685924"));
-builder.Services.AddDbContext<BandContext>(opt =>
+builder.Services.AddDbContext<MusicianAppContext>(opt =>
     opt.UseNpgsql("Host=localhost;Port=5432;Database=musicians;Username=postgres;Password=13685924"));
 
 
